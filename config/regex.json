@@ -1,0 +1,30 @@
+{
+    "ignored_tags": ["EPIC", "Theme", "Feature"],
+    "user_story_module": "^(?P<module>\\w+):",
+    "user_story_name": ".*?as\\s+a[n]?\\s+.*?[,]?\\s*I\\s+need\\s+(?P<objective>.*?)[,]?\\s*[st]o that\\s+.*[\\.]?",
+    "test_case_name": ".*?:\\s*(?P<name>[A-Z][a-z])+",
+    "test_folder": "@test_folder\\s+(?P<test_folder>[^\\r\\n]+)",
+    "test_contract": "(.*?(@type\\s+(?P<type>functional|performance|unit)|@author\\s+(?P<author>\\w+)))+",
+    "file_types":{
+        "php": {
+            "test_type":"test(?P<type>Functional|Performance|Unit)(?P<objective>\\w+)",
+            "test_case": "@story\\s+(?P<story>US[0-9]+)(?P<contract>.*?)\\spublic\\sfunction\\s+(?P<header>\\w+)"
+        },
+        "erl": {
+            "test_type": "(?P<objective>[\\w_]+)_test",
+            "test_case": "@story\\s+(?P<story>US[0-9]+)(?P<contract>.*?)(?P<header>[\\w_]+_test)"
+        },
+        "rb": {
+            "test_type": "(?P<objective>[_\\w]+)",
+            "test_case": "@story\\s+(?P<story>US[0-9]+)(?P<contract>.*?)(test_(?P<header>[\\w_]+))"
+        },
+        "js": {
+            "test_type": "(?P<objective>.+(?<![test]))",
+            "test_case": "@story\\s+(?P<story>US[0-9]+)(?P<contract>.*?)(test\\(.*?['\"](?P<header>[^\"']+)['\"])"
+        },
+        "py": {
+            "test_type": "(?P<objective>[\\w_]+)",
+            "test_case": "(test_(?P<header>[\\w_]+))\\(self\\):\\s+\"\"\".*@story\\s+(?P<story>US[0-9]+)(?P<contract>.*?)\"\"\""
+        }
+    }
+}

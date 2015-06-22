@@ -1,0 +1,22 @@
+{
+  "RALLY_SERVER": "rally1.rallydev.com",
+  "RALLY_USER": "",
+  "RALLY_PASSWORD": "",
+  "RALLY_WORKSPACE": "Company",
+  "RALLY_LOGGER": "mypyral.log",
+  "GITHUB_SERVER": "https://github.com/api/v3",
+  "GITHUB_USER": "",
+  "GITHUB_PASSWORD": "",
+  "HOST": "localhost",
+  "PORT": 1234,
+  "SLEEP": 15,
+  "rally": {
+    "github_user/github_repo": "Rally Project"
+  },
+  "IGNORE_PULL_REQUESTS_AS_DEFECTS": true,
+  "COMPANY_DOMAIN": "{0}@company.com",
+  "HIPCHAT_TOKEN": "",
+  "QE_CHAT": 0,
+  "QE_CHAT_IS_USER": false,
+  "INFORM_URL": "https://rally1.rallydev.com/#/{project}d/detail/userstory/{story}"
+}
