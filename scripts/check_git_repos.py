@@ -46,7 +46,13 @@ def check_git_repos(cmdargs):
     for repo_dir in repo_dirs:
       # get the repo name from remote origin url as <name>.git
       g = cmd.Git(repo_dir)
-      repo_name = g.execute(["git", "config", "--get", "remote.origin.url"]).split('/')[-1]
+
+      # if repo has origin set name based on it
+      try:
+        repo_name = g.execute(["git", "config", "--get", "remote.origin.url"]).split('/')[-1]
+      except:
+        # if repo has not origin set name based on its folder name
+        repo_name = repo_dir.split('/')[-1]
 
       # @TODO: Maybe picorb could be replaced with a sysargv
       url = 'git@bitbucket.org:%s/%s'%(owner,repo_name)
@@ -58,13 +64,16 @@ def check_git_repos(cmdargs):
       # create the bitbucket repo
       create_bitbucket_repo(user, pwd, owner, repo_name.split(".")[0])
 
-      # Push all branches to the new remote
-      g.execute(["git", "push", 'bitbucket_remote', "--all"])
 
       # check if repo has uncommited changes
-      if (repo.is_dirty()):
-        # @TODO: Commit those changes on a new `uncommited`branch and push
-        pass
+      if (repo.is_dirty() or len(repo.untracked_files)>0):
+        print "This repo is dirty: ", repo_name
+        g.execute(["git", "checkout", "-b", "uncommited"])
+        g.execute(["git", "add", "-A"])
+        g.execute(["git", "commit", "-m", "'uncommited changes'"])
+
+      # Push all branches to the new remote
+      g.execute(["git", "push", "bitbucket_remote", "--all"])
 
       # delete temporal remote
       repo.delete_remote(bitbucket_remote)
