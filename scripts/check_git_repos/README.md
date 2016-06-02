@@ -1,17 +1,15 @@
-## Check git repos and upload them to bitbucket
+# Check git repos and upload them to bitbucket
 
 This script check git repositories into the gived path and upload them to bitbucket, Additionally if any repo is dirty, the repo is uploaded to bitbucket with an `uncommited` branch
 
-Installation
-============
+## Installation
 
 ```
 $ mkvirtualenv check-git-repos
 $ pip install -r requirements.txt
 ```
 
-Usage
-=====
+## Usage
 
 It is necessary to have an `.env` file located where you want with bitbucket credentials as shown below
 
