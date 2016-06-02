@@ -2,14 +2,23 @@ import sys
 import os
 import argparse
 import requests
+from dotenv import load_dotenv, find_dotenv
 from git import Repo, cmd
+
+# load .env
+load_dotenv(find_dotenv())
+
+BITBUCKET_USER = os.environ.get("BITBUCKET_USER")
+BITBUCKET_PASSWORD = os.environ.get("BITBUCKET_PASSWORD")
 
 # owner can be the user or team
 def create_bitbucket_repo(user, pwd, owner, repo_slug):
+  print user, pwd
   data = {"scm": "git", "is_private": "true", "fork_policy": "no_public_forks"} 
   url = "https://api.bitbucket.org/2.0/repositories/%s/%s"%(owner, repo_slug)
   headers = {"Content-Type": "application/json"}
   response = requests.post(url, json=data,headers=headers, auth=(user, pwd))
+  print response.status_code
 
 def get_repos_dirs(tree_dir):
   # repos dirs
@@ -33,8 +42,8 @@ def check_git_repos(cmdargs):
   root = cmdargs.path
 
   # Bitbucket crendentials
-  pwd = cmdargs.pwd
-  user = cmdargs.user
+  pwd = BITBUCKET_PASSWORD
+  user = BITBUCKET_USER
   owner = cmdargs.owner
 
   if(os.path.exists(cmdargs.path)):
@@ -61,6 +70,7 @@ def check_git_repos(cmdargs):
 
       # create a temporal remote
       bitbucket_remote = repo.create_remote('bitbucket_remote',url)
+
       # create the bitbucket repo
       create_bitbucket_repo(user, pwd, owner, repo_name.split(".")[0])
 
@@ -86,8 +96,6 @@ def main(argv=None):
   description = "This script check git repositories into the gived path and upload the dirty repos to bitbucket"
   parser = argparse.ArgumentParser(description=description, add_help=True)
   parser.add_argument('-path', dest='path', type=str, help='The path to check', required=True)
-  parser.add_argument('-user', dest='user', type=str, help='Bitbucket username', required=True)
-  parser.add_argument('-pwd', dest='pwd', type=str, help='Bitbucket password', required=True)
   parser.add_argument('-owner', dest='owner', type=str, help='Bitbucket team or owner', required=True)
   cmdargs = parser.parse_args()
   check_git_repos(cmdargs)
