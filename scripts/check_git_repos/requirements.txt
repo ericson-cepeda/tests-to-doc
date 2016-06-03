@@ -1,0 +1,10 @@
+click==6.6
+gitdb==0.6.4
+GitPython==2.0.3
+oauthlib==1.1.1
+ordereddict==1.1
+python-dotenv==0.5.1
+requests==2.10.0
+requests-oauthlib==0.6.1
+sh==1.11
+smmap==0.9.0
