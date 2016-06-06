@@ -13,12 +13,10 @@ BITBUCKET_PASSWORD = os.environ.get("BITBUCKET_PASSWORD")
 
 # owner can be the user or team
 def create_bitbucket_repo(user, pwd, owner, repo_slug):
-    print user, pwd
     data = {"scm": "git", "is_private": "true", "fork_policy": "no_public_forks"} 
     url = "https://api.bitbucket.org/2.0/repositories/%s/%s"%(owner, repo_slug)
     headers = {"Content-Type": "application/json"}
     response = requests.post(url, json=data,headers=headers, auth=(user, pwd))
-    print response.status_code
 
 def get_repos_dirs(tree_dir):
     # repos dirs
@@ -69,6 +67,12 @@ def check_git_repos(cmdargs):
             repo = Repo(repo_dir)
 
             # create a temporal remote
+            try:
+                # delete bitbucket_remote if it exists
+                repo.delete_remote('bitbucket_remote')
+            except:
+                pass
+
             bitbucket_remote = repo.create_remote('bitbucket_remote',url)
 
             # create the bitbucket repo
@@ -78,7 +82,11 @@ def check_git_repos(cmdargs):
             # check if repo has uncommited changes
             if (repo.is_dirty() or len(repo.untracked_files)>0):
                 print "This repo is dirty: ", repo_name
-                g.execute(["git", "checkout", "-b", "uncommited"])
+                # create/change branch
+                try:
+                    g.execute(["git", "checkout", "-b", "uncommited"])
+                except:
+                    g.execute(["git", "checkout", "uncommited"])
                 g.execute(["git", "add", "-A"])
                 g.execute(["git", "commit", "-m", "'uncommited changes'"])
 
