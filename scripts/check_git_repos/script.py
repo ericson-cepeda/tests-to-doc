@@ -17,6 +17,8 @@ def create_bitbucket_repo(user, pwd, owner, repo_slug):
     url = "https://api.bitbucket.org/2.0/repositories/%s/%s"%(owner, repo_slug)
     headers = {"Content-Type": "application/json"}
     response = requests.post(url, json=data,headers=headers, auth=(user, pwd))
+    if (response.json()["error"]):
+        print response.json()["error"]["message"]
 
 def get_repos_dirs(tree_dir):
     # repos dirs
@@ -59,7 +61,8 @@ def check_git_repos(cmdargs):
                 repo_name = g.execute(["git", "config", "--get", "remote.origin.url"]).split('/')[-1]
             except:
                 # if repo has not origin set name based on its folder name
-                repo_name = repo_dir.split('/')[-1]
+                repo_name = repo_dir.split('/')[-1].lower().replace(" ","_")
+
 
             # @TODO: Maybe picorb could be replaced with a sysargv
             url = 'git@bitbucket.org:%s/%s'%(owner,repo_name)
