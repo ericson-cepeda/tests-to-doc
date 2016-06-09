@@ -59,7 +59,9 @@ def check_git_repos(cmdargs):
                 repo_name = g.execute(["git", "config", "--get", "remote.origin.url"]).split('/')[-1]
             except:
                 # if repo has not origin set name based on its folder name
-                repo_name = repo_dir.split('/')[-1]
+                repo_name = repo_dir.split('/')[-1].lower().replace(" ","_")
+
+            print repo_name
 
             # @TODO: Maybe picorb could be replaced with a sysargv
             url = 'git@bitbucket.org:%s/%s'%(owner,repo_name)
