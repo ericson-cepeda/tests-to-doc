@@ -17,7 +17,7 @@ def create_bitbucket_repo(user, pwd, owner, repo_slug):
     url = "https://api.bitbucket.org/2.0/repositories/%s/%s"%(owner, repo_slug)
     headers = {"Content-Type": "application/json"}
     response = requests.post(url, json=data,headers=headers, auth=(user, pwd))
-    if (response.json()["error"]):
+    if "error" in response.json():
         print response.json()["error"]["message"]
 
 def get_repos_dirs(tree_dir):
@@ -58,7 +58,7 @@ def check_git_repos(cmdargs):
 
             # if repo has origin set name based on it
             try:
-                repo_name = g.execute(["git", "config", "--get", "remote.origin.url"]).split('/')[-1]
+                repo_name = g.execute(["git", "config", "--get", "remote.origin.url"]).split('/')[-1].split(".")[0]
             except:
                 # if repo has not origin set name based on its folder name
                 repo_name = repo_dir.split('/')[-1].lower().replace(" ","_")
@@ -79,7 +79,7 @@ def check_git_repos(cmdargs):
             bitbucket_remote = repo.create_remote('bitbucket_remote',url)
 
             # create the bitbucket repo
-            create_bitbucket_repo(user, pwd, owner, repo_name.split(".")[0])
+            create_bitbucket_repo(user, pwd, owner, repo_name)
 
 
             # check if repo has uncommited changes
