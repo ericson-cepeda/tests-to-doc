@@ -4,7 +4,7 @@ import argparse
 import requests
 from dotenv import load_dotenv, find_dotenv
 from git import Repo, cmd
-
+from slugify import slugify
 # load .env
 load_dotenv(find_dotenv())
 
@@ -13,7 +13,7 @@ BITBUCKET_PASSWORD = os.environ.get("BITBUCKET_PASSWORD")
 
 # owner can be the user or team
 def create_bitbucket_repo(user, pwd, owner, repo_slug):
-    data = {"scm": "git", "is_private": "true", "fork_policy": "no_public_forks"} 
+    data = {"scm": "git", "is_private": "true", "fork_policy": "no_public_forks"}
     url = "https://api.bitbucket.org/2.0/repositories/%s/%s"%(owner, repo_slug)
     headers = {"Content-Type": "application/json"}
     response = requests.post(url, json=data,headers=headers, auth=(user, pwd))
@@ -26,7 +26,7 @@ def get_repos_dirs(tree_dir):
 
     subdirs = [x[0] for x in os.walk(tree_dir)]
     for subdir in subdirs:
-        try: 
+        try:
             repo = Repo(subdir)
             # if subfolder does not have the sufix .git then add it
             if(subdir.split('.')[-1] != 'git'):
@@ -63,7 +63,7 @@ def check_git_repos(cmdargs):
                 # if repo has not origin set name based on its folder name
                 repo_name = repo_dir.split('/')[-1].lower().replace(" ","_")
 
-
+            repo_name = slugify(repo_name)
             # @TODO: Maybe picorb could be replaced with a sysargv
             url = 'git@bitbucket.org:%s/%s'%(owner,repo_name)
 
@@ -80,7 +80,7 @@ def check_git_repos(cmdargs):
 
             # create the bitbucket repo
             create_bitbucket_repo(user, pwd, owner, repo_name)
-
+            print repo_name
 
             # check if repo has uncommited changes
             if (repo.is_dirty() or len(repo.untracked_files)>0):
@@ -91,7 +91,7 @@ def check_git_repos(cmdargs):
                 except:
                     g.execute(["git", "checkout", "uncommited"])
                 g.execute(["git", "add", "-A"])
-                g.execute(["git", "commit", "-m", "'uncommited changes'"])
+                g.execute(["git", "commit", "-m", '"uncommited changes"'])
 
             # Push all branches to the new remote
             g.execute(["git", "push", "bitbucket_remote", "--all"])
@@ -110,7 +110,7 @@ def main(argv=None):
     parser.add_argument('-owner', dest='owner', type=str, help='Bitbucket team or owner', required=True)
     cmdargs = parser.parse_args()
     check_git_repos(cmdargs)
-    
+
 
 if __name__ == '__main__':
     status = main(sys.argv[1:])
