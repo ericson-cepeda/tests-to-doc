@@ -11,11 +11,11 @@ $ pip install -r requirements.txt
 
 ## Usage
 
-It is necessary to have an `.env` file located where you want with bitbucket credentials as shown below
+It is necessary to have an `.env` file located where you want with bitbucket credentials as shown below, without spaces between the `=` and without `'` or `"` in the credentials
 
 ```
-BITBUCKET_USER="myUser"
-BITBUCKET_PASSWORD="myPassword"
+BITBUCKET_USER=myUser
+BITBUCKET_PASSWORD=myPassword
 ```
 
 after that you can run the script
